@@ -1,7 +1,19 @@
 import pandas as pd
 from typing import Dict
+from datetime import datetime
+import os
 
-EXCEL_FILE = "oil_production_data.xlsx"
+# Base folder for Excel files
+BASE_FOLDER = r"..\\Backend\\Oil_Production_Data"
+
+# Make sure folder exists
+os.makedirs(BASE_FOLDER, exist_ok=True)
+
+# Create timestamped Excel file name inside that folder
+timestamp_str = datetime.now().strftime("%d%m%Y_%H-%M")
+EXCEL_FILE = os.path.join(BASE_FOLDER, f"oil_production_data_{timestamp_str}.xlsx")
+
+
 
 def init_excel():
     try:
