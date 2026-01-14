@@ -3,6 +3,7 @@ from datetime import datetime
 from fastapi import WebSocket
 from Core.Data_Store import historical_data
 from Core.Excel_Utils import append_to_excel
+from starlette.websockets import WebSocketDisconnect
 
 async def oil_stream(ws: WebSocket):
     await ws.accept()
@@ -19,5 +20,7 @@ async def oil_stream(ws: WebSocket):
             append_to_excel(data_point)
             await ws.send_json(data_point)
             await asyncio.sleep(1)
-    except Exception:
-        await ws.close()
+    # except Exception:
+    #     await ws.close()
+    except WebSocketDisconnect:
+        print("WebSocket disconnected")
