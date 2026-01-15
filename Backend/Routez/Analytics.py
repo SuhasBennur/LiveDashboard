@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+import asyncio
+from fastapi import APIRouter, WebSocket
 from Core.Data_Store import historical_data
 
 router = APIRouter()
@@ -22,3 +23,16 @@ def get_analytics():
         "avg_temperature": round(avg_temperature, 2),
         "by_well": by_well,
     }
+
+# NEW: WebSocket endpoint for streaming analytics
+@router.websocket("/ws/analytics")
+async def analytics_stream(ws: WebSocket):
+    await ws.accept()
+    try:
+        while True:
+            # reuse the same logic
+            analytics = get_analytics()
+            await ws.send_json(analytics)
+            await asyncio.sleep(5)  # push every 5 seconds
+    except Exception:
+        print("Analytics WebSocket disconnected")
